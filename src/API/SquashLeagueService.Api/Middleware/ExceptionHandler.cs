@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using SquashLeagueService.Application.Exceptions;
+using SquashLeagueService.Domain.Exceptions;
 
 namespace SquashLeagueService.Api.Middleware;
 

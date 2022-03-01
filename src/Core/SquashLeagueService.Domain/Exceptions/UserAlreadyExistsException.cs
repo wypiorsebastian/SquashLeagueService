@@ -1,4 +1,4 @@
-﻿namespace SquashLeagueService.Application.Exceptions;
+﻿namespace SquashLeagueService.Domain.Exceptions;
 
 public class UserAlreadyExistsException : DomainExceptionBase
 {
