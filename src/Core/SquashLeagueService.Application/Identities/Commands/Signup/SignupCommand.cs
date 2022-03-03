@@ -44,7 +44,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
 
         var createdUser = await CreateApplicationUser(request);
         
-        await _userManager.AddToRoleAsync(createdUser, "Player");
+        await _userManager.AddToRoleAsync(createdUser, request.Role);
         await AddUserClaims(createdUser, request);
 
         return new SignupResponse { Id = createdUser.Id};
@@ -84,6 +84,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         var tasks = new List<Task>();
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Phone", request.PhoneNumber)));
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Email", request.Email)));
+        tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", request.Role)));
 
         return Task.WhenAll(tasks);
     }
