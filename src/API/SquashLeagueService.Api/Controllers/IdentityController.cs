@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Matching;
 using SquashLeagueService.Application.Identities.Commands.Signup;
+using SquashLeagueService.Application.Identities.Queries.SignIn;
 
 namespace SquashLeagueService.Api.Controllers;
 
@@ -20,6 +21,13 @@ public class IdentityController : ControllerBase
     public async Task<ActionResult<SignupResponse>> Signup([FromBody] SignupCommand signupCommand)
     {
         var result = await _mediator.Send(signupCommand);
+        return Ok();
+    }
+    
+    [HttpPost("Signin")]
+    public async Task<ActionResult<AuthenticationResponse>> Signin([FromBody] SignInQuery signInQuery)
+    {
+        var result = await _mediator.Send(signInQuery);
         return Ok();
     }
 }

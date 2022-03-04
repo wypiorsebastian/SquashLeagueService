@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SquashLeagueService.Application;

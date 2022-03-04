@@ -1,33 +1,26 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using SquashLeagueService.Application.Common.Exceptions;
+using SquashLeagueService.Application.Contracts.Identity;
 using SquashLeagueService.Domain.Entities;
 
 namespace SquashLeagueService.Application.Identities.Queries.SignIn;
 
-public record SignInQuery(string Username, string Password) : IRequest<SignInResponse>;
+public record SignInQuery(string Username, string Password) : IRequest<AuthenticationResponse>;
 
-public class SignInQueryHandler : IRequestHandler<SignInQuery, SignInResponse>
+public class SignInQueryHandler : IRequestHandler<SignInQuery, AuthenticationResponse>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IAuthenticationService _authenticationService;
 
-    public SignInQueryHandler(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public SignInQueryHandler(IAuthenticationService authenticationService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _authenticationService =
+            authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
     }
-    
-    public async Task<SignInResponse> Handle(SignInQuery request, CancellationToken cancellationToken)
-    {
-        var applicationUser = await _userManager.FindByNameAsync(request.Username);
-        if (applicationUser is null)
-            throw new UserAuthenticationException("Provided user does not exist");
 
-        var isPasswordValid = await _userManager.CheckPasswordAsync(applicationUser, request.Password);
-        if (isPasswordValid is false)
-            throw new UserAuthenticationException("Provided credentials are invalid");
-        
-        
+    public async Task<AuthenticationResponse> Handle(SignInQuery request, CancellationToken cancellationToken)
+    {
+        await _authenticationService.SignInAsync(request);
+        return null;
     }
 }

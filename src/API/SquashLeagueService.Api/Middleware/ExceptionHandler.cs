@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using System.Security.Authentication;
 using System.Text.Json;
+using SquashLeagueService.Application.Common.Exceptions;
 using SquashLeagueService.Domain.Exceptions;
 
 namespace SquashLeagueService.Api.Middleware;
@@ -45,10 +47,14 @@ public class ExceptionHandler
             }
 
             switch (exception)
-            {   
+            {
                 case UserAlreadyExistsException userAlreadyExistsException:
                     httpStatusCode = HttpStatusCode.UnprocessableEntity;
                     result = userAlreadyExistsException.Message;
+                    break;
+                case UserAuthenticationException userAuthenticationException:
+                    httpStatusCode = HttpStatusCode.Unauthorized;
+                    result = userAuthenticationException.Message;
                     break;
                 case { } ex:
                     httpStatusCode = HttpStatusCode.BadRequest;
@@ -57,7 +63,7 @@ public class ExceptionHandler
 
             context.Response.StatusCode = (int)httpStatusCode;
 
-            if (result == string.Empty)
+            if (result != string.Empty)
             {
                 result = JsonSerializer.Serialize(new {error = exception.Message, errorCode = errorCode});
             }

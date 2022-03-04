@@ -3,6 +3,7 @@ using MediatR;
 using SquashLeagueService.Api.Middleware;
 using SquashLeagueService.Application;
 using SquashLeagueService.Persistence;
+using SquashLeagueService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

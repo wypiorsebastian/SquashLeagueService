@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Core\SquashLeagueService.Application\SquashLeagueService.Application.csproj" />
       <ProjectReference Include="..\..\Infrastructure\SquashLeagueService.Persistence\SquashLeagueService.Persistence.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\SquashLeagueService.Infrastructure\SquashLeagueService.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
