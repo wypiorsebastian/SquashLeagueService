@@ -28,6 +28,6 @@ public class IdentityController : ControllerBase
     public async Task<ActionResult<AuthenticationResponse>> Signin([FromBody] SignInQuery signInQuery)
     {
         var result = await _mediator.Send(signInQuery);
-        return Ok();
+        return Ok(result);
     }
 }

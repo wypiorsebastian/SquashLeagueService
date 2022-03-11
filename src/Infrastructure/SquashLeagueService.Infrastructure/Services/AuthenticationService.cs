@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
 using SquashLeagueService.Application.Common.Exceptions;
 using SquashLeagueService.Application.Contracts.Identity;
 using SquashLeagueService.Application.Identities.Queries.SignIn;
@@ -30,8 +31,10 @@ public class AuthenticationService : IAuthenticationService
         if (isPasswordValid is false)
             throw new UserAuthenticationException("Provided credentials are invalid");
 
-        var token = await _tokenService.GenerateToken(applicationUser);
+        var jwtToken = await  _tokenService.GenerateToken(applicationUser);
 
-        return null;
+        var authResponse = new AuthenticationResponse(applicationUser.Id, applicationUser.Email, applicationUser.Email, new JwtSecurityTokenHandler().WriteToken(jwtToken));
+
+        return authResponse;
     }
 }

@@ -1,4 +1,5 @@
 using System.Reflection;
+using FluentValidation.AspNetCore;
 using MediatR;
 using SquashLeagueService.Api.Middleware;
 using SquashLeagueService.Application;
@@ -20,6 +21,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddFluentValidation(config =>
+    config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
+
+
+
 
 
 var app = builder.Build();

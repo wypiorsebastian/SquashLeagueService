@@ -20,7 +20,7 @@ public class SignInQueryHandler : IRequestHandler<SignInQuery, AuthenticationRes
 
     public async Task<AuthenticationResponse> Handle(SignInQuery request, CancellationToken cancellationToken)
     {
-        await _authenticationService.SignInAsync(request);
-        return null;
+        var authenticationResponse = await _authenticationService.SignInAsync(request);
+        return authenticationResponse;
     }
 }
