@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SquashLeagueService.Domain.Entities;
+using SquashLeagueService.Persistence.Repositories.UnitOfWork;
 
 namespace SquashLeagueService.Persistence;
 
@@ -18,8 +19,10 @@ public static class PersistenceExtensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
         
         services.Configure<IdentityOptions>(options =>
         {

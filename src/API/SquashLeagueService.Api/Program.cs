@@ -18,16 +18,14 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
+
+//Order is important here since AddIdentity has be called before AddAuthentication
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration); 
+builder.Services.AddApplication();
+
 builder.Services.AddFluentValidation(config =>
     config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
-
-
-
-
-
 
 var app = builder.Build();
 
@@ -38,8 +36,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors((x => x.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin()
+    ));
 app.UseHttpsRedirection();
 
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ExceptionHandler>();
 

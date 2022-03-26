@@ -31,7 +31,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
 
     public async Task<SignupResponse> Handle(SignupCommand request, CancellationToken cancellationToken)
     {
-        if (!(await _roleManager.RoleExistsAsync("player")))
+        if (!(await _roleManager.RoleExistsAsync("Player")))
         {
             var role = new IdentityRole { Name = "Player" };
             var roleCreationResult = await _roleManager.CreateAsync(role);
@@ -39,12 +39,22 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
             if (!roleCreationResult.Succeeded)
                 throw new RoleRegistrationException(role.Name);
         }
+        
+        if (!(await _roleManager.RoleExistsAsync("Admin")))
+        {
+            var adminRole = new IdentityRole { Name = "Admin" };
+            var roleCreationResult = await _roleManager.CreateAsync(adminRole);
+
+            if (!roleCreationResult.Succeeded)
+                throw new RoleRegistrationException(adminRole.Name);
+        }
 
         await VerifyUserExistence(request);
 
         var createdUser = await CreateApplicationUser(request);
         
         await _userManager.AddToRoleAsync(createdUser, request.Role);
+        //await _userManager.AddToRoleAsync(createdUser, "Admin");
         await AddUserClaims(createdUser, request);
 
         return new SignupResponse { Id = createdUser.Id};
@@ -85,6 +95,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Phone", request.PhoneNumber)));
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Email", request.Email)));
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", request.Role)));
+        //tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", "Admin")));
 
         return Task.WhenAll(tasks);
     }

@@ -19,7 +19,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\SquashLeagueService.Persistence\SquashLeagueService.Persistence.csproj" />
       <ProjectReference Include="..\SquashLeagueService.Domain\SquashLeagueService.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Users\Queries" />
     </ItemGroup>
 
 </Project>

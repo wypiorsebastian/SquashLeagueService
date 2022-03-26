@@ -2,13 +2,16 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SquashLeagueService.Application.Contracts.Identity;
+using SquashLeagueService.Domain.Entities;
 using SquashLeagueService.Infrastructure.Models.Settings;
 using SquashLeagueService.Infrastructure.Services;
 using SquashLeagueService.Infrastructure.Services.TokenService;
+using SquashLeagueService.Persistence;
 
 namespace SquashLeagueService.Infrastructure;
 
@@ -16,12 +19,13 @@ public static class Extensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<IAuthenticationService, AuthenticationService>();
 
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(opt =>
@@ -30,10 +34,10 @@ public static class Extensions
                 opt.SaveToken = false;
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = false,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
                     ClockSkew = TimeSpan.Zero,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudience = configuration["JwtSettings:Audience"],
@@ -41,6 +45,7 @@ public static class Extensions
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
                 };
                 
+                /*
                 opt.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = c =>
@@ -66,8 +71,14 @@ public static class Extensions
                         return context.Response.WriteAsync(result);
                     },
                 };
+                */
                 
             });
+
+        services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy("LoggedOnly", policy => policy.RequireAuthenticatedUser());
+        });
         
         return services;
     }

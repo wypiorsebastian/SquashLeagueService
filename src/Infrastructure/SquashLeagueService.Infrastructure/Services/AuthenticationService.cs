@@ -24,6 +24,7 @@ public class AuthenticationService : IAuthenticationService
     public async Task<AuthenticationResponse> SignInAsync(SignInQuery signInQuery)
     {
         var applicationUser = await _userManager.FindByNameAsync(signInQuery.Username);
+        
         if (applicationUser is null)
             throw new UserAuthenticationException("Provided user does not exist");
 
