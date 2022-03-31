@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Users\Queries" />
+      <Folder Include="Identities\Queries\GetRoles" />
     </ItemGroup>
 
 </Project>

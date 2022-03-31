@@ -1,4 +1,4 @@
-﻿namespace SquashLeagueService.Application.Users.Queries.GetUsers;
+﻿namespace SquashLeagueService.Application.Users.Queries.GetUser;
 
 public class UserDto
 {
@@ -9,4 +9,6 @@ public class UserDto
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public bool LockoutEnabled { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
+    public List<UserRoleDto> Roles { get; set; } = new List<UserRoleDto>();
 }

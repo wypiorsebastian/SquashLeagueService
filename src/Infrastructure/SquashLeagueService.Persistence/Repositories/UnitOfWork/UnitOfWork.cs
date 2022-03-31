@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 using SquashLeagueService.Domain.Repositories;
 using SquashLeagueService.Persistence.Repositories;
 

@@ -10,9 +10,9 @@ public record SignInQuery(string Username, string Password) : IRequest<Authentic
 
 public class SignInQueryHandler : IRequestHandler<SignInQuery, AuthenticationResponse>
 {
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IIdentityService _authenticationService;
 
-    public SignInQueryHandler(IAuthenticationService authenticationService)
+    public SignInQueryHandler(IIdentityService authenticationService)
     {
         _authenticationService =
             authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));

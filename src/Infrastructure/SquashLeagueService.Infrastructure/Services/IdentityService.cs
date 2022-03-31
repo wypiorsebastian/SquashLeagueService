@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Identity;
 using SquashLeagueService.Application.Common.Exceptions;
 using SquashLeagueService.Application.Contracts.Identity;
 using SquashLeagueService.Application.Identities.Queries.SignIn;
+using SquashLeagueService.Application.Users.Queries.GetUser;
 using SquashLeagueService.Domain.Entities;
 using SquashLeagueService.Infrastructure.Services.TokenService;
 
 namespace SquashLeagueService.Infrastructure.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
 
-    public AuthenticationService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
+    public IdentityService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService)
     {
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
@@ -37,5 +38,10 @@ public class AuthenticationService : IAuthenticationService
         var authResponse = new AuthenticationResponse(applicationUser.Id, applicationUser.Email, applicationUser.Email, new JwtSecurityTokenHandler().WriteToken(jwtToken));
 
         return authResponse;
+    }
+    public async Task<IEnumerable<string>> GetUserRoles(string userId)
+    {
+        var appUser = await _userManager.FindByIdAsync(userId);
+        return await _userManager.GetRolesAsync(appUser);
     }
 }

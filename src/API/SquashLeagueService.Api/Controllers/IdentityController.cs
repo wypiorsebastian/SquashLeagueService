@@ -6,7 +6,7 @@ using SquashLeagueService.Application.Identities.Queries.SignIn;
 
 namespace SquashLeagueService.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/identity")]
 [ApiController]
 public class IdentityController : ControllerBase
 {

@@ -20,7 +20,7 @@ public static class Extensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<ITokenService, TokenService>();
-        services.AddTransient<IAuthenticationService, AuthenticationService>();
+        services.AddTransient<IIdentityService, IdentityService>();
 
         services.AddAuthentication(options =>
             {
@@ -45,7 +45,7 @@ public static class Extensions
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
                 };
                 
-                /*
+                
                 opt.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = c =>
@@ -71,13 +71,13 @@ public static class Extensions
                         return context.Response.WriteAsync(result);
                     },
                 };
-                */
+                
                 
             });
 
         services.AddAuthorization(opt =>
         {
-            opt.AddPolicy("LoggedOnly", policy => policy.RequireAuthenticatedUser());
+            opt.AddPolicy("Authenticated", policy => policy.RequireAuthenticatedUser());
         });
         
         return services;

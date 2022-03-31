@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SquashLeagueService.Domain.Entities;
 using SquashLeagueService.Domain.Repositories;
 
@@ -16,5 +17,19 @@ public class ApplicationUsersRepository : IApplicationUserRepository
     public Task<List<ApplicationUser>> GetApplicationUsers()
     {
         return _context.Users.ToListAsync();
+    }
+
+    public Task<ApplicationUser> GetApplicationUser(string id)
+    {
+        return _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<List<IdentityRole>> GetUserRoles(string id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        var userRoles = await _context.UserRoles.Where(x => x.UserId == id).ToListAsync();
+        var wholeRoles = await _context.Roles.ToListAsync();
+        var roles = wholeRoles.Where(x => userRoles.Any(r => r.RoleId == x.Id));
+        return roles.ToList();
     }
 }
