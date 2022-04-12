@@ -39,9 +39,4 @@ public class IdentityService : IIdentityService
 
         return authResponse;
     }
-    public async Task<IEnumerable<string>> GetUserRoles(string userId)
-    {
-        var appUser = await _userManager.FindByIdAsync(userId);
-        return await _userManager.GetRolesAsync(appUser);
-    }
 }

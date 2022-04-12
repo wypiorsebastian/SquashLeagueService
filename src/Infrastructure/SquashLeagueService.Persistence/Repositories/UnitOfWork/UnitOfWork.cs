@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private readonly ApplicationDbContext _context;
     private readonly ILogger _logger;
     public IApplicationUserRepository Users { get; private set; }
+    public IIdentityRepository Identities { get; }
 
     public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
     {
@@ -17,6 +18,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         _logger = loggerFactory.CreateLogger("logs");
 
         Users = new ApplicationUsersRepository(_context);
+        Identities = new IdentityRepository(_context);
     }
     
     public async Task CompleteAsync()

@@ -17,6 +17,14 @@ public class IdentityController : ControllerBase
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
+    [HttpGet("roles")]
+    public async Task<IActionResult> GetApplicationRoles()
+    {
+        var applicationRoles = _mediator.Send(GetApplicationRoles());
+        return Ok(applicationRoles);
+    }
+    
+
     [HttpPost("Signup")]
     public async Task<ActionResult<SignupResponse>> Signup([FromBody] SignupCommand signupCommand)
     {

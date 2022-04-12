@@ -8,5 +8,4 @@ namespace SquashLeagueService.Application.Contracts.Identity;
 public interface IIdentityService
 {
     Task<AuthenticationResponse> SignInAsync(SignInQuery signInQuery);
-    Task<IEnumerable<string>> GetUserRoles(string userId);
 }
