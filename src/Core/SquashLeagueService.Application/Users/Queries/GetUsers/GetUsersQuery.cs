@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
-using SquashLeagueService.Domain.Repositories;
 using SquashLeagueService.Persistence.Repositories.UnitOfWork;
 
 namespace SquashLeagueService.Application.Users.Queries.GetUsers;
 
-public record GetUsersQuery : IRequest<IEnumerable<UserDto>>;
+public record GetUsersQuery : IRequest<IEnumerable<UserForListDto>>;
 
-public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserDto>>
+public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserForListDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,9 +17,9 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<U
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<IEnumerable<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserForListDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
         var users = await _unitOfWork.Users.GetApplicationUsers();
-        return _mapper.Map<IEnumerable<UserDto>>(users);
+        return _mapper.Map<IEnumerable<UserForListDto>>(users);
     }
 }

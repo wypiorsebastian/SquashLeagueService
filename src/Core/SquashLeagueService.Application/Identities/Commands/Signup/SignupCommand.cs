@@ -50,6 +50,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         }
 
         await VerifyUserExistence(request);
+        
 
         var createdUser = await CreateApplicationUser(request);
         
@@ -68,7 +69,8 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
             FirstName = request.FirstName,
             LastName = request.LastName,
             PhoneNumber = request.PhoneNumber,
-            Email = request.Email
+            Email = request.Email,
+            IsActive = true
         };
 
         var userCreationResult = await _userManager.CreateAsync(newUser, request.Password);

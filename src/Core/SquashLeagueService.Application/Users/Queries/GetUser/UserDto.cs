@@ -10,5 +10,6 @@ public class UserDto
     public string PhoneNumber { get; set; }
     public bool LockoutEnabled { get; set; }
     public DateTimeOffset? LockoutEnd { get; set; }
+    public bool IsActive { get; set; }
     public List<UserRoleDto> Roles { get; set; } = new List<UserRoleDto>();
 }
