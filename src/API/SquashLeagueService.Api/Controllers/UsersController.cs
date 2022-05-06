@@ -37,4 +37,12 @@ public class UsersController : ControllerBase
             return NotFound("User with provided identifier does not exist");
         return Ok(result);
     }
+    
+    //TODO - change trole to Admin
+    [Authorize(Policy = "Authenticated")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] Object any)
+    {
+        return Ok();
+    }
 }
