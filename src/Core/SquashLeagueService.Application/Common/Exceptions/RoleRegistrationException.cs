@@ -1,6 +1,8 @@
-﻿namespace SquashLeagueService.Application.Common.Exceptions;
+﻿using SquashLeagueService.Domain.Exceptions;
 
-public class RoleRegistrationException : Exception
+namespace SquashLeagueService.Application.Common.Exceptions;
+
+public class RoleRegistrationException : AppExceptionBase
 {
     public string ErrorMessage { get; set; }
     public ICollection<string> ErrorList = new List<string>();

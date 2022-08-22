@@ -1,6 +1,7 @@
-﻿namespace SquashLeagueService.Application.Users.UpdateUser.DTOs;
+﻿namespace SquashLeagueService.Application.Users.Commands.UpdateUser.DTOs;
 
-public record UpdateUserDto(string Username,
+public record UpdateUserDto(
+    string Username,
     string FirstName,
     string LastName,
     string Email,

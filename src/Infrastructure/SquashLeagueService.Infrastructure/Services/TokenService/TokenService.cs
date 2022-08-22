@@ -34,8 +34,8 @@ public class TokenService : ITokenService
                 new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email),
                 new Claim("uid", applicationUser.Id)
             }
-            .Union(userClaims)
-            .Union(roleClaims);
+            .Union(userClaims);
+            //.Union(roleClaims);
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

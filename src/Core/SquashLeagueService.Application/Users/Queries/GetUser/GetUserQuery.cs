@@ -19,8 +19,8 @@ public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto>
 
     public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.Users.GetApplicationUser(request.UserId);
-        var userRoles = await _unitOfWork.Users.GetUserRoles(request.UserId);
+        var user = await _unitOfWork.UserRepository.GetApplicationUser(request.UserId);
+        var userRoles = await _unitOfWork.UserRepository.GetUserRoles(request.UserId);
 
         var userDto = _mapper.Map<UserDto>(user);
         foreach (var userRole in userRoles)

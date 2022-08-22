@@ -1,4 +1,5 @@
 using System.Reflection;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using SquashLeagueService.Api.Middleware;
@@ -24,9 +25,8 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration); 
 builder.Services.AddApplication();
 
-builder.Services.AddFluentValidation(config =>
-    config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
-
+// builder.Services.AddFluentValidation(config =>
+//     config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

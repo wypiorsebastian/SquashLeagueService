@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SquashLeagueService.Application.Users.Commands.UpdateUser;
 using SquashLeagueService.Application.Users.Queries.GetUser;
 using SquashLeagueService.Application.Users.Queries.GetUsers;
 
@@ -38,11 +39,13 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
     
-    //TODO - change trole to Admin
+    //TODO - change role to Admin
     [Authorize(Policy = "Authenticated")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(string id, [FromBody] Object any)
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserCommand command)
     {
+        command = command with { UserId = id };
+        var result = await _mediator.Send(command);
         return Ok();
     }
 }

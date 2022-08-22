@@ -20,7 +20,7 @@ public class GetApplicationRolesQueryHandler : IRequestHandler<GetApplicationRol
 
     public async Task<IEnumerable<ApplicationRoleDto>> Handle(GetApplicationRolesQuery request, CancellationToken cancellationToken)
     {
-        var roles = await _unitOfWork.Identities.GetApplicationRoles();
+        var roles = await _unitOfWork.IdentityRepository.GetApplicationRoles();
 
         return _mapper.Map<IEnumerable<ApplicationRoleDto>>(roles);
     }

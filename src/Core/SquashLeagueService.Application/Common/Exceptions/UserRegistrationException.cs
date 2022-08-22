@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SquashLeagueService.Domain.Exceptions;
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class UserRegistrationException : Exception
+public class UserRegistrationException : AppExceptionBase
 {
     public string ErrorMessage { get; set; }
     public ICollection<string> ErrorList = new List<string>();

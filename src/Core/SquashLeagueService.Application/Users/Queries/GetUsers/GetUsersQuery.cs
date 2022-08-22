@@ -19,7 +19,7 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<U
 
     public async Task<IEnumerable<UserForListDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.Users.GetApplicationUsers();
+        var users = await _unitOfWork.UserRepository.GetApplicationUsers();
         return _mapper.Map<IEnumerable<UserForListDto>>(users);
     }
 }

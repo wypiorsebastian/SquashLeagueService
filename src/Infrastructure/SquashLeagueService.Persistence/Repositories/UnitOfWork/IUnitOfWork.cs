@@ -4,8 +4,8 @@ namespace SquashLeagueService.Persistence.Repositories.UnitOfWork;
 
 public interface IUnitOfWork
 {
-    IApplicationUserRepository Users { get; }
-    IIdentityRepository Identities { get; }
-
+    IApplicationUserRepository UserRepository { get; }
+    IIdentityRepository IdentityRepository { get; }
+    bool HasChanges { get; }
     Task CompleteAsync();
 }

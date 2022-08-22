@@ -9,16 +9,16 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger _logger;
-    public IApplicationUserRepository Users { get; private set; }
-    public IIdentityRepository Identities { get; }
+    public IApplicationUserRepository UserRepository { get; }
+    public IIdentityRepository IdentityRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger("logs");
 
-        Users = new ApplicationUsersRepository(_context);
-        Identities = new IdentityRepository(_context);
+        UserRepository = new ApplicationUsersRepository(_context);
+        IdentityRepository = new IdentityRepository(_context);
     }
     
     public async Task CompleteAsync()
@@ -30,4 +30,6 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     {
         await _context.DisposeAsync();
     }
+
+    public bool HasChanges => _context.ChangeTracker.HasChanges();
 }

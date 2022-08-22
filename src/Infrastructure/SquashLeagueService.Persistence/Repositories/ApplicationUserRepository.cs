@@ -8,7 +8,7 @@ namespace SquashLeagueService.Persistence.Repositories;
 public class ApplicationUsersRepository : IApplicationUserRepository
 {
     private readonly ApplicationDbContext _context;
-
+    
     public ApplicationUsersRepository(ApplicationDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -31,5 +31,10 @@ public class ApplicationUsersRepository : IApplicationUserRepository
         var wholeRoles = await _context.Roles.ToListAsync();
         var roles = wholeRoles.Where(x => userRoles.Any(r => r.RoleId == x.Id));
         return roles.ToList();
+    }
+
+    public void UpdateUser(ApplicationUser user)
+    {
+        _context.Users.Update(user);
     }
 }

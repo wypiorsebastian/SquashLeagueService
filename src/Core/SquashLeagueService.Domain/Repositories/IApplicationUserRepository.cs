@@ -8,4 +8,5 @@ public interface IApplicationUserRepository
     Task<List<ApplicationUser>> GetApplicationUsers();
     Task<ApplicationUser> GetApplicationUser(string id);
     Task<List<IdentityRole>> GetUserRoles(string id);
+    void UpdateUser(ApplicationUser user);
 }
