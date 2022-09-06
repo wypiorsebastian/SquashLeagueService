@@ -26,6 +26,7 @@ public static class PersistenceExtensions
         
         services.Configure<IdentityOptions>(options =>
         {
+            
             options.Password.RequiredLength = 6;
             options.Lockout.MaxFailedAccessAttempts = 3;
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);

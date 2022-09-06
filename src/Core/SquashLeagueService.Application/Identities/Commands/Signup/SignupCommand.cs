@@ -13,7 +13,7 @@ public class SignupCommand : IRequest<SignupResponse>
     public string FirstName { get; init; }
     public string LastName { get; init; }
     public string Email { get; init; }
-    public string Role { get; init; }
+    public string[] Roles { get; init; }
     public string PhoneNumber { get; init; }
     public string Password { get; init; }
 }
@@ -53,8 +53,12 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         
 
         var createdUser = await CreateApplicationUser(request);
+
+        foreach (var role in request.Roles)
+        {
+            await _userManager.AddToRoleAsync(createdUser, role);
+        }
         
-        await _userManager.AddToRoleAsync(createdUser, request.Role);
         //await _userManager.AddToRoleAsync(createdUser, "Admin");
         await AddUserClaims(createdUser, request);
 
@@ -96,8 +100,11 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         var tasks = new List<Task>();
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Phone", request.PhoneNumber)));
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Email", request.Email)));
-        tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", request.Role)));
-        //tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", "Admin")));
+        
+        foreach (var role in request.Roles)
+        {
+            tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", role)));
+        }
 
         return Task.WhenAll(tasks);
     }

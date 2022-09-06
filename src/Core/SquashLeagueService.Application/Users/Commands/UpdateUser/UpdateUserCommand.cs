@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 using SquashLeagueService.Application.Common.Exceptions;
 using SquashLeagueService.Application.Users.Commands.UpdateUser.DTOs;
 using SquashLeagueService.Domain.Repositories;
@@ -12,7 +13,7 @@ public record UpdateUserCommand(
     string FirstName,
     string LastName,
     string Email,
-    string Phone,
+    string PhoneNumber,
     IReadOnlyList<UpdateUserRoleDto> UserRoles
 ) : IRequest;
 
@@ -34,8 +35,9 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
         user.FirstName = request.FirstName;
         user.Email = request.Email;
         user.LastName = request.LastName;
-        user.PhoneNumber = request.Phone;
+        user.PhoneNumber = request.PhoneNumber;
         user.UserName = request.Username;
+        
 
         await _unitOfWork.CompleteAsync();
         return  Unit.Value;
