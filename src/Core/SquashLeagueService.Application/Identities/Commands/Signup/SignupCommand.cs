@@ -54,7 +54,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
 
         var createdUser = await CreateApplicationUser(request);
 
-        foreach (var role in request.Roles)
+        foreach (var role in request.Roles ?? Enumerable.Empty<string>())
         {
             await _userManager.AddToRoleAsync(createdUser, role);
         }
@@ -101,7 +101,7 @@ public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Phone", request.PhoneNumber)));
         tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Email", request.Email)));
         
-        foreach (var role in request.Roles)
+        foreach (var role in request.Roles ?? Enumerable.Empty<string>())
         {
             tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", role)));
         }
