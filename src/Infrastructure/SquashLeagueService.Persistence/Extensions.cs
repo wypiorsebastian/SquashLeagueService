@@ -21,7 +21,12 @@ public static class PersistenceExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+            })
             .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
         
         services.Configure<IdentityOptions>(options =>
