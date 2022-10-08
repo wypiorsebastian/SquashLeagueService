@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using SquashLeagueService.Domain.Abstractions;
 
 namespace SquashLeagueService.Domain.Entities;
 
-public class ApplicationUser : IdentityUser
+public class Member : Entity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public bool IsActive { get; set; } = true;
+    public string IdentityUserId { get; set; }
+    
 }

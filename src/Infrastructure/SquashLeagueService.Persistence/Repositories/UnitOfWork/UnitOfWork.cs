@@ -9,7 +9,6 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger _logger;
-    public IApplicationUserRepository UserRepository { get; }
     public IIdentityRepository IdentityRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
@@ -17,7 +16,6 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         _context = context;
         _logger = loggerFactory.CreateLogger("logs");
 
-        UserRepository = new ApplicationUsersRepository(_context);
         IdentityRepository = new IdentityRepository(_context);
     }
     

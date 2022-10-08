@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SquashLeagueService.Domain.Entities;
 using SquashLeagueService.Persistence.Repositories.UnitOfWork;
 
 namespace SquashLeagueService.Persistence;
@@ -21,7 +18,7 @@ public static class PersistenceExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+        services.AddIdentity<IdentityUser, IdentityRole>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = false;

@@ -1,9 +1,5 @@
-﻿using System.Security.Claims;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using SquashLeagueService.Application.Common.Exceptions;
-using SquashLeagueService.Domain.Entities;
-using SquashLeagueService.Domain.Exceptions;
+﻿using MediatR;
+using SquashLeagueService.Application.Contracts.Identity;
 
 namespace SquashLeagueService.Application.Identities.Commands.Signup;
 
@@ -20,93 +16,20 @@ public class SignupCommand : IRequest<SignupResponse>
 
 public class SignupQueryHandler : IRequestHandler<SignupCommand, SignupResponse>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IIdentityService _identityService;
 
-    public SignupQueryHandler(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public SignupQueryHandler(IIdentityService identityService)
     {
-        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-        _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
+        _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
     }
 
     public async Task<SignupResponse> Handle(SignupCommand request, CancellationToken cancellationToken)
     {
-        if (!(await _roleManager.RoleExistsAsync("Player")))
-        {
-            var role = new IdentityRole { Name = "Player" };
-            var roleCreationResult = await _roleManager.CreateAsync(role);
+        var signupResult = await _identityService.SignupAsync(request);
 
-            if (!roleCreationResult.Succeeded)
-                throw new RoleRegistrationException(role.Name);
-        }
-        
-        if (!(await _roleManager.RoleExistsAsync("Admin")))
-        {
-            var adminRole = new IdentityRole { Name = "Admin" };
-            var roleCreationResult = await _roleManager.CreateAsync(adminRole);
-
-            if (!roleCreationResult.Succeeded)
-                throw new RoleRegistrationException(adminRole.Name);
-        }
-
-        await VerifyUserExistence(request);
-        
-
-        var createdUser = await CreateApplicationUser(request);
-
-        foreach (var role in request.Roles ?? Enumerable.Empty<string>())
-        {
-            await _userManager.AddToRoleAsync(createdUser, role);
-        }
-        
-        //await _userManager.AddToRoleAsync(createdUser, "Admin");
-        await AddUserClaims(createdUser, request);
-
-        return new SignupResponse { Id = createdUser.Id};
+        return new SignupResponse { Id = signupResult.Id};
     }
 
-    private async Task<ApplicationUser> CreateApplicationUser(SignupCommand request)
-    {
-        var newUser = new ApplicationUser()
-        {
-            UserName = request.Username,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            PhoneNumber = request.PhoneNumber,
-            Email = request.Email,
-            IsActive = true
-        };
-
-        var userCreationResult = await _userManager.CreateAsync(newUser, request.Password);
-        if (!userCreationResult.Succeeded)
-            throw new UserRegistrationException("Registration error", userCreationResult.Errors);
-        
-        return await _userManager.FindByNameAsync(request.Username);
-    }
-
-    private async Task VerifyUserExistence(SignupCommand request)
-    {
-        var existingUser = await _userManager.FindByNameAsync(request.Username);
-        if (existingUser is { })
-            throw new UserAlreadyExistsException(request.Username);
-
-        var existingEmail = await _userManager.FindByEmailAsync(request.Email);
-        if (existingEmail is { })
-            throw new UserAlreadyExistsException(request.Email);
-    }
-
-    private Task AddUserClaims(ApplicationUser applicationUser, SignupCommand request)
-    {
-        var tasks = new List<Task>();
-        tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Phone", request.PhoneNumber)));
-        tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Email", request.Email)));
-        
-        foreach (var role in request.Roles ?? Enumerable.Empty<string>())
-        {
-            tasks.Add(_userManager.AddClaimAsync(applicationUser, new Claim("Role", role)));
-        }
-
-        return Task.WhenAll(tasks);
-    }
+    
 }
 

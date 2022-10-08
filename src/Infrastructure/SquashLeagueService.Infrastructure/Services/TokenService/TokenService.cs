@@ -4,23 +4,22 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SquashLeagueService.Domain.Entities;
 using SquashLeagueService.Infrastructure.Models.Settings;
 
 namespace SquashLeagueService.Infrastructure.Services.TokenService;
 
 public class TokenService : ITokenService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtSettings _jwtSettings;
 
-    public TokenService(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> jwtSettings)
+    public TokenService(UserManager<IdentityUser> userManager, IOptions<JwtSettings> jwtSettings)
     {
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _jwtSettings = jwtSettings.Value;
     }
 
-    public async Task<JwtSecurityToken> GenerateToken(ApplicationUser applicationUser)
+    public async Task<JwtSecurityToken> GenerateToken(IdentityUser applicationUser)
     {
         var userClaims = await _userManager.GetClaimsAsync(applicationUser);
         var roles = await _userManager.GetRolesAsync(applicationUser);
