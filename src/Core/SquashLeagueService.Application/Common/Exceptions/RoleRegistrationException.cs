@@ -2,7 +2,7 @@
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class RoleRegistrationException : AppExceptionBase
+public class RoleRegistrationException : DomainExceptionBase
 {
     public string ErrorMessage { get; set; }
     public ICollection<string> ErrorList = new List<string>();

@@ -1,10 +1,15 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SquashLeagueService.Application.Common.Exceptions;
 using SquashLeagueService.Application.Contracts.Identity;
+using SquashLeagueService.Application.Exceptions;
 using SquashLeagueService.Application.Identities.Commands.Signup;
 using SquashLeagueService.Application.Identities.Queries.SignIn;
+using SquashLeagueService.Application.Members.Queries.GetMember;
+using SquashLeagueService.Application.Models;
 using SquashLeagueService.Infrastructure.Services.TokenService;
 
 namespace SquashLeagueService.Infrastructure.Services;
@@ -15,32 +20,35 @@ public class IdentityService : IIdentityService
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ITokenService _tokenService;
+    private readonly IMapper _mapper;
 
     public IdentityService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
-        RoleManager<IdentityRole> roleManager, ITokenService tokenService)
+        RoleManager<IdentityRole> roleManager, ITokenService tokenService, IMapper mapper)
     {
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
         _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<AuthenticationResponse> SignInAsync(SignInQuery signInQuery)
+    public async Task<AuthenticationResult> SignInAsync(SignInQuery signInQuery)
     {
-        var applicationUser = await _userManager.FindByNameAsync(signInQuery.Username);
+        var identity = await _userManager.FindByNameAsync(signInQuery.Username);
         
-        if (applicationUser is null)
+        if (identity is null)
             throw new UserAuthenticationException("Provided user does not exist");
 
-        var isPasswordValid = await _userManager.CheckPasswordAsync(applicationUser, signInQuery.Password);
+        var isPasswordValid = await _userManager.CheckPasswordAsync(identity, signInQuery.Password);
         if (isPasswordValid is false)
             throw new UserAuthenticationException("Provided credentials are invalid");
 
-        var jwtToken = await  _tokenService.GenerateToken(applicationUser);
+        var jwtToken = await  _tokenService.GenerateToken(identity);
+        var tokenValue = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
-        var authResponse = new AuthenticationResponse(applicationUser.Id, applicationUser.Email, applicationUser.Email, new JwtSecurityTokenHandler().WriteToken(jwtToken));
+        var authResult = new AuthenticationResult(identity.Id, identity.UserName, identity.Email, tokenValue);
 
-        return authResponse;
+        return authResult;
     }
 
     public async Task<SignupResponse> SignupAsync(SignupCommand signupCommand)
@@ -79,6 +87,27 @@ public class IdentityService : IIdentityService
         return new SignupResponse { Id = createdUser.Id};
     }
     
+    public async Task<IEnumerable<string>> GetIdentityRoles(string identityId)
+    {
+        var member = await _userManager.FindByIdAsync(identityId);
+
+        if (member is null)
+            throw new MemberDoesNotExistException(identityId);
+
+        return await _userManager.GetRolesAsync(member);
+    }
+
+    public async Task<IdentityData> GetIdentityData(string identityId)
+    {
+        var identity = await _userManager.FindByIdAsync(identityId);
+
+        if (identity is null)
+            throw new IdentityDoesNotExistsException(identityId);
+
+
+        return new IdentityData(identity.UserName, identity.PhoneNumber, identity.Email);
+    }
+
     private async Task VerifyIdentityExistence(SignupCommand request)
     {
         var existingUser = await _userManager.FindByNameAsync(request.Username);
@@ -107,10 +136,12 @@ public class IdentityService : IIdentityService
     }
     private Task AddIdentityClaims(IdentityUser identityUser, SignupCommand command)
     {
-        var tasks = new List<Task>();
-        tasks.Add(_userManager.AddClaimAsync(identityUser, new Claim("Phone", command.PhoneNumber)));
-        tasks.Add(_userManager.AddClaimAsync(identityUser, new Claim("Email", command.Email)));
-        
+        var tasks = new List<Task>
+        {
+            _userManager.AddClaimAsync(identityUser, new Claim("Phone", command.PhoneNumber)),
+            _userManager.AddClaimAsync(identityUser, new Claim("Email", command.Email))
+        };
+
         foreach (var role in command.Roles ?? Enumerable.Empty<string>())
         {
             tasks.Add(_userManager.AddClaimAsync(identityUser, new Claim("Role", role)));
@@ -118,4 +149,6 @@ public class IdentityService : IIdentityService
 
         return Task.WhenAll(tasks);
     }
+
+    
 }

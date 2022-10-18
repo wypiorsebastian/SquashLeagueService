@@ -1,3 +1,3 @@
 ﻿namespace SquashLeagueService.Application.Identities.Queries.SignIn;
 
-public record AuthenticationResponse(string Id, string Username, string Email, string Token);
+public record AuthenticationResponse(string MemberId, string Username, string Email, string FirstName, string LastName, string Token);

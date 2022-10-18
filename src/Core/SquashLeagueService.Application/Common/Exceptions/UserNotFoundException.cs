@@ -2,7 +2,7 @@
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class UserNotFoundException : AppExceptionBase
+public class UserNotFoundException : DomainExceptionBase
 {
     public override string Code => "user_not_found";
 

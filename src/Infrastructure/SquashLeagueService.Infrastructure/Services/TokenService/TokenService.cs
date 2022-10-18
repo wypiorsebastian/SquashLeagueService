@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SquashLeagueService.Application.Contracts.Identity;
 using SquashLeagueService.Infrastructure.Models.Settings;
 
 namespace SquashLeagueService.Infrastructure.Services.TokenService;

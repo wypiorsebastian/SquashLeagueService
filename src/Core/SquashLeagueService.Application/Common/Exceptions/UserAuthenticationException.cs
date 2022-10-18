@@ -2,7 +2,7 @@
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class UserAuthenticationException : AppExceptionBase
+public class UserAuthenticationException : DomainExceptionBase
 {
     public string ErrorMessage { get; set; }
     public ICollection<string> ErrorList = new List<string>();

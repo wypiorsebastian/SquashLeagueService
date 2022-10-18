@@ -1,22 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
-using SquashLeagueService.Domain.Repositories;
-using SquashLeagueService.Persistence.Repositories;
+﻿using Microsoft.Extensions.Logging;
 
 namespace SquashLeagueService.Persistence.Repositories.UnitOfWork;
 
-public class UnitOfWork : IUnitOfWork, IDisposable
+internal class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger _logger;
-    public IIdentityRepository IdentityRepository { get; }
+    
 
     public UnitOfWork(ApplicationDbContext context, ILoggerFactory loggerFactory)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger("logs");
-
-        IdentityRepository = new IdentityRepository(_context);
     }
     
     public async Task CompleteAsync()

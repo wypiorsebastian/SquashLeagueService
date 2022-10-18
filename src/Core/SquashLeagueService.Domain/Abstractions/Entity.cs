@@ -1,4 +1,5 @@
-﻿namespace SquashLeagueService.Domain.Abstractions;
+﻿#nullable enable
+namespace SquashLeagueService.Domain.Abstractions;
 
 public abstract class Entity : IEquatable<Entity>
 {
@@ -7,7 +8,7 @@ public abstract class Entity : IEquatable<Entity>
     protected Entity(Guid id) => Id = id;
     protected Entity(){}
 
-    public static bool operator ==(Entity? left, Entity? right)
+    public static bool operator ==(Entity left, Entity right)
         => left is not null && right is not null && left.Equals(right);
 
     public static bool operator !=(Entity? left, Entity right)

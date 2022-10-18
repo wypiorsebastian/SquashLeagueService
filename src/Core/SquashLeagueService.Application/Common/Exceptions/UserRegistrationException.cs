@@ -3,7 +3,7 @@ using SquashLeagueService.Domain.Exceptions;
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class UserRegistrationException : AppExceptionBase
+public class UserRegistrationException : DomainExceptionBase
 {
     public string ErrorMessage { get; set; }
     public ICollection<string> ErrorList = new List<string>();

@@ -2,7 +2,7 @@
 
 namespace SquashLeagueService.Application.Common.Exceptions;
 
-public class UserAlreadyExistsException : AppExceptionBase
+public class UserAlreadyExistsException : DomainExceptionBase
 {
     public override string Code => "user_already_exists";
 
