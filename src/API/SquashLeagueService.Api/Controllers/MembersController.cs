@@ -19,10 +19,10 @@ public class MembersController : ControllerBase
     
     [Authorize(Policy = "Authenticated")]
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetMembers()
     {
-        var users = await _mediator.Send(new GetMembersQuery());
-        return Ok(users);
+        var members = await _mediator.Send(new GetMembersQuery());
+        return Ok(members);
     }
     
     [Authorize(Policy = "Authenticated")]

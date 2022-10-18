@@ -28,4 +28,9 @@ public class MemberRepository : IMemberRepository
     {
         return _applicationDbContext.Members.SingleOrDefaultAsync(x => x.IdentityUserId == identityId);
     }
+
+    public async Task<IEnumerable<Member>> GetMembers()
+    {
+        return await _applicationDbContext.Members.ToListAsync();
+    }
 }
